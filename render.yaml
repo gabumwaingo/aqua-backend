@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: aqua-ledger-api
+    runtime: python
+    region: frankfurt
+    envVars:
+      - key: FLASK_ENV      # free tier can keep 'production'
+        value: production
+      - key: JWT_SECRET_KEY
+        generateValue: true
+    buildCommand:  pip install -r requirements.txt
+    startCommand:  gunicorn -b 0.0.0.0:10000 app:app
+    plan: free
