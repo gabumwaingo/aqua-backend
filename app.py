@@ -25,7 +25,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password_hash = db.Column(db.String(128), nullable=False)
+    password_hash = db.Column(db.String(255), nullable=False)
     mpesa_code = db.Column(db.String(13))
     
     def set_password(self, password):
@@ -78,6 +78,7 @@ def register():
     new_user.set_password(password)  # hash the password
     db.session.add(new_user)
     db.session.commit()
+    access_token = create_access_token(identity=str(new_user.id)) # use user.id as identity
     return {"message": f"User {name} registered successfully."}, 201
 
 # Login route
