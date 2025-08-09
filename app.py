@@ -37,7 +37,7 @@ class User(db.Model):
         return check_password_hash(self.password_hash, password)
 
 #Catch model
-class Catch(db.Model):
+class Catch(db.Model):user_id = int(get_jwt_identity())
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))  # reference to User
     species = db.Column(db.String(50), nullable=False)
