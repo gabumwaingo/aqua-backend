@@ -1,4 +1,5 @@
 # aqualedger-backend/app.py
+from os import abort
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
@@ -9,6 +10,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 from flask_migrate import Migrate
 from sqlalchemy import func
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 
 app = Flask(__name__)
 
@@ -52,6 +55,16 @@ class Catch(db.Model):
 
     user = db.relationship('User', backref=db.backref('catches', lazy=True))
 
+class SecureModelView(ModelView):
+    def is_accessible(self):
+        token = request.headers.get('X-Admin-Token') or request.args.get('admin_token')
+        return token and token == os.getenv('ADMIN_TOKEN')
+    def inaccessible_callback(self, name, **kwargs):
+        return abort(403)
+
+admin = Admin(app, name="Aqua Ledger Admin", template_mode="bootstrap4", url="/admin")
+admin.add_view(SecureModelView(User, db.session))
+admin.add_view(SecureModelView(Catch, db.session))
 
 # --- Routes ---
 @app.route("/")
