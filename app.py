@@ -1,6 +1,6 @@
 # aqualedger-backend/app.py
-from os import abort
-from flask import Flask, jsonify, request
+import os
+from flask import Flask, jsonify, request, abort
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import (
@@ -218,3 +218,4 @@ with app.app_context():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
